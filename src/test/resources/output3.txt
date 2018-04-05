@@ -1,0 +1,31 @@
+{
+	"field1":"value",
+	"field2":0.1,
+	"field3":1234,
+	"array":[
+		"val1",
+		"val2",
+		"val3"
+	],
+	"nestedObject":{
+		"nestedField1":"value",
+		"nestedField2":0.1,
+		"nestedField3":1234,
+		"nestedArray":[
+			"val1",
+			"val2",
+			"val3"
+		],
+		"doubleNestedObject":{
+			"field1":"value",
+			"field2":0.1,
+			"field3":1234,
+			"array":[
+				"val1",
+				"val2",
+				"val3"
+			],
+			"nullField":null
+		}
+	}
+}
