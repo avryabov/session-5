@@ -14,6 +14,7 @@ public class InputTestObjects {
             case "2": return inputTestObjects.new ClassDate();
             case "3": return inputTestObjects.new ClassWithNested();
             case "4": return inputTestObjects.new ClassPrimitivePrivate();
+            case "5": return inputTestObjects.new ClassPrimitiveWrapperWrapper();
             default: return null;
         }
     }
@@ -111,6 +112,25 @@ public class InputTestObjects {
             field2 = 0.1d;
             field3 = 1234;
             array = new String[] {"val1", "val2", "val3"};
+        }
+    }
+
+    class ClassPrimitiveWrapper extends ClassPrimitive
+    {
+        public String fieldWrapper;
+
+        ClassPrimitiveWrapper(){
+            fieldWrapper = "valueWrapper";
+            field1 = "newValue";
+        }
+    }
+
+    class ClassPrimitiveWrapperWrapper extends ClassPrimitiveWrapper
+    {
+        public String fieldWrapperWrapper;
+
+        ClassPrimitiveWrapperWrapper(){
+            fieldWrapperWrapper = "valueWrapperWrapper";
         }
     }
 }

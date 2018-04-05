@@ -1,6 +1,9 @@
 package ru.sbt.jschool.session5.problem2;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+
+import java.io.PrintStream;
 import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
@@ -31,6 +34,11 @@ public class JSONGeneratorTest {
     @Test
     public void testJSONGeneratorPrivate() throws Exception {
         doTest("4");
+    }
+
+    @Test
+    public void testJSONGeneratorWrapper() throws Exception {
+        doTest("5");
     }
 
     private void doTest(String num) throws Exception {

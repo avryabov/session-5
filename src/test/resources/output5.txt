@@ -1,0 +1,13 @@
+{
+	"fieldWrapperWrapper":"valueWrapperWrapper",
+	"fieldWrapper":"valueWrapper",
+	"field1":"newValue",
+	"field2":0.1,
+	"field3":1234,
+	"array":[
+		"val1",
+		"val2",
+		"val3"
+	],
+	"nullField":null
+}
