@@ -28,6 +28,10 @@ public class JSONGenerator {
         return generate(obj, 0).toString();
     }
 
+    public void addSupportedType(Class clazz, ObjectJSON obj) {
+        typeMap.put(clazz, obj);
+    }
+
     private StringBuilder generate(Object obj, int tabs) {
         StringBuilder sb = new StringBuilder();
         sb.append(START);
@@ -45,6 +49,7 @@ public class JSONGenerator {
         sb.append(String.format(END, JSONUtil.tabs(tabs)));
         return sb;
     }
+
 
     private StringBuilder generateFields(Object obj, Field[] fields, int tabs) {
         StringBuilder sb = new StringBuilder();
