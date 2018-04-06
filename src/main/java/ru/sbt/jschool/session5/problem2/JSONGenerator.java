@@ -30,15 +30,29 @@ public class JSONGenerator {
 
     private StringBuilder generate(Object obj, int tabs) {
         StringBuilder sb = new StringBuilder();
-        Class clazz = obj.getClass();
-        Field[] publicFields = clazz.getFields();
-        if (publicFields.length == 0)
-            return sb;
         sb.append(START);
         tabs++;
-        for (int i = 0; i < publicFields.length; i++) {
-            Field field = publicFields[i];
+        Class clazz = obj.getClass();
+        do {
+            Field[] fields = clazz.getDeclaredFields();
+            if (fields.length == 0)
+                break;
+            sb.append(generateFields(obj, fields, tabs));
+            clazz = clazz.getSuperclass();
+        } while(clazz != null);
+        sb.deleteCharAt(sb.length()-2);
+        tabs--;
+        sb.append(String.format(END, JSONUtil.tabs(tabs)));
+        return sb;
+    }
+
+    private StringBuilder generateFields(Object obj, Field[] fields, int tabs) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < fields.length; i++) {
+            Field field = fields[i];
             String fieldName = field.getName();
+            if(fieldName.equals("this$0"))
+                continue;
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
@@ -59,13 +73,10 @@ public class JSONGenerator {
             } else {
                 sb.append(String.format(BASE_OBJ, tabs(tabs), fieldName, generate(fieldObj, tabs)));
             }
-
-            if (i < publicFields.length - 1)
+            if (i < fields.length - 1)
                 sb.append(DIV);
             sb.append(RET);
         }
-        tabs--;
-        sb.append(String.format(END, JSONUtil.tabs(tabs)));
         return sb;
     }
 }

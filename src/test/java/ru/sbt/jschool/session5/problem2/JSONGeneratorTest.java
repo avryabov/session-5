@@ -1,9 +1,7 @@
 package ru.sbt.jschool.session5.problem2;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
-import java.io.PrintStream;
 import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
