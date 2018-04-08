@@ -1,6 +1,5 @@
 package ru.sbt.jschool.session5.problem2.objects;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**

@@ -39,7 +39,17 @@ public class JSONGeneratorTest {
         doTest("5");
     }
 
-    private void doTest(String num) throws Exception {
+    @Test
+    public void testJSONGeneratorSimpleList() throws Exception {
+        doTest("6");
+    }
+
+    @Test
+    public void testJSONGeneratorSimplePrimitive() throws Exception {
+        doTest("7");
+    }
+
+    private void doTest(String num) {
         JSONGenerator generator = new JSONGenerator();
 
         String output = generator.generate(InputTestObjects.inputObject(num));

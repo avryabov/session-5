@@ -25,14 +25,35 @@ public class JSONGenerator {
     }
 
     public String generate(Object obj) {
-        return generate(obj, 0).toString();
+        return generateObject(obj, "", 0).toString();
     }
 
-    public void addSupportedType(Class clazz, ObjectJSON obj) {
+    public void addType(Class clazz, ObjectJSON obj) {
         typeMap.put(clazz, obj);
     }
 
-    private StringBuilder generate(Object obj, int tabs) {
+    private StringBuilder generateObject(Object obj, String name, int tabs) {
+        StringBuilder sb = new StringBuilder();
+        if (obj == null) {
+            sb.append(String.format(BASE_OBJ, tabs(tabs), name, "null"));
+        } else if (ClassUtils.isPrimitiveOrWrapper(obj.getClass())) {
+            sb.append(String.format(BASE_OBJ, tabs(tabs), name, obj));
+        } else if (obj.getClass().isArray()) {
+            sb.append(String.format(BASE_OBJ, tabs(tabs), name, typeMap.get(Array.class).json(obj, tabs)));
+        } else if (typeMap.containsKey(obj.getClass())) {
+            sb.append(String.format(BASE, tabs(tabs), name, typeMap.get(obj.getClass()).json(obj, tabs)));
+        } else if (ClassUtils.getAllInterfaces(obj.getClass()).contains(Collection.class)) {
+            sb.append(String.format(BASE_OBJ, tabs(tabs), name, typeMap.get(Collection.class).json(obj, tabs)));
+        } else {
+            sb.append(String.format(BASE_OBJ, tabs(tabs), name, generateCustomObj(obj, tabs)));
+        }
+        if (name.equals("")) {
+            sb.delete(0, 3);
+        }
+        return sb;
+    }
+
+    private StringBuilder generateCustomObj(Object obj, int tabs) {
         StringBuilder sb = new StringBuilder();
         sb.append(START);
         tabs++;
@@ -43,8 +64,8 @@ public class JSONGenerator {
                 break;
             sb.append(generateFields(obj, fields, tabs));
             clazz = clazz.getSuperclass();
-        } while(clazz != null);
-        sb.deleteCharAt(sb.length()-2);
+        } while (clazz != null);
+        sb.deleteCharAt(sb.length() - 2);
         tabs--;
         sb.append(String.format(END, JSONUtil.tabs(tabs)));
         return sb;
@@ -56,7 +77,7 @@ public class JSONGenerator {
         for (int i = 0; i < fields.length; i++) {
             Field field = fields[i];
             String fieldName = field.getName();
-            if(fieldName.equals("this$0"))
+            if (fieldName.equals("this$0"))
                 continue;
             if (!field.isAccessible()) {
                 field.setAccessible(true);
@@ -64,24 +85,15 @@ public class JSONGenerator {
             Object fieldObj = null;
             try {
                 fieldObj = field.get(obj);
-            } catch (IllegalAccessException e) {}
-            if (fieldObj == null)
-                sb.append(String.format(BASE_OBJ, tabs(tabs), fieldName, "null"));
-            else if (ClassUtils.isPrimitiveOrWrapper(field.getType())) {
-                sb.append(String.format(BASE_OBJ, tabs(tabs), fieldName, fieldObj));
-            } else if (field.getType().isArray()) {
-                sb.append(String.format(BASE_OBJ, tabs(tabs), fieldName, typeMap.get(Array.class).json(fieldObj, tabs)));
-            } else if (typeMap.containsKey(fieldObj.getClass())) {
-                sb.append(String.format(BASE, tabs(tabs), fieldName, typeMap.get(fieldObj.getClass()).json(fieldObj, tabs)));
-            } else if (ClassUtils.getAllInterfaces(fieldObj.getClass()).contains(Collection.class)) {
-                sb.append(String.format(BASE_OBJ, tabs(tabs), fieldName, typeMap.get(Collection.class).json(fieldObj, tabs)));
-            } else {
-                sb.append(String.format(BASE_OBJ, tabs(tabs), fieldName, generate(fieldObj, tabs)));
+            } catch (IllegalAccessException e) {
             }
+            sb.append(generateObject(fieldObj, fieldName, tabs));
             if (i < fields.length - 1)
                 sb.append(DIV);
             sb.append(RET);
         }
         return sb;
     }
+
+
 }

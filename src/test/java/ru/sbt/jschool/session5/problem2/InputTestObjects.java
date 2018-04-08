@@ -1,5 +1,6 @@
 package ru.sbt.jschool.session5.problem2;
 
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -15,6 +16,8 @@ public class InputTestObjects {
             case "3": return inputTestObjects.new ClassWithNested();
             case "4": return inputTestObjects.new ClassPrimitivePrivate();
             case "5": return inputTestObjects.new ClassPrimitiveWrapperWrapper();
+            case "6": return new ArrayList<>(Arrays.asList(new String[] {"one", "two", "three"}));
+            case "7": return 77;
             default: return null;
         }
     }
