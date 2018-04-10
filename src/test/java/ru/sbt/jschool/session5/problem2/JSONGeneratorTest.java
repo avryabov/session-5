@@ -49,6 +49,11 @@ public class JSONGeneratorTest {
         doTest("7");
     }
 
+    @Test
+    public void testJSONGeneratorListOfPrimitiveObject() throws Exception {
+        doTest("8");
+    }
+
     private void doTest(String num) {
         JSONGenerator generator = new JSONGenerator();
 

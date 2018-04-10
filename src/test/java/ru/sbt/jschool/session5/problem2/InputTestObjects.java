@@ -18,6 +18,9 @@ public class InputTestObjects {
             case "5": return inputTestObjects.new ClassPrimitiveWrapperWrapper();
             case "6": return new ArrayList<>(Arrays.asList(new String[] {"one", "two", "three"}));
             case "7": return 77;
+            case "8":
+                InputTestObjects testObjects = new InputTestObjects();
+                return new ArrayList<>(Arrays.asList(new ClassPrimitive[] {testObjects.new ClassPrimitive(), testObjects.new ClassPrimitive(), testObjects.new ClassPrimitive()}));
             default: return null;
         }
     }
