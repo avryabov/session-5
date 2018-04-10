@@ -17,11 +17,9 @@ public class JSONGenerator {
 
     {
         typeMap.put(String.class, new StringJSON());
-        typeMap.put(Array.class, new ArrayJSON());
         typeMap.put(Date.class, new DateJSON());
         typeMap.put(Calendar.class, new CalendarJSON());
         typeMap.put(GregorianCalendar.class, new CalendarJSON());
-        typeMap.put(Collection.class, new CollectionJSON());
     }
 
     public String generate(Object obj) {
@@ -35,20 +33,39 @@ public class JSONGenerator {
     private StringBuilder generateObject(Object obj, String name, int tabs) {
         StringBuilder sb = new StringBuilder();
         if (obj == null) {
-            sb.append(String.format(BASE_OBJ, tabs(tabs), name, "null"));
+            sb.append(appendString(tabs, name,  new StringBuilder("null")));
         } else if (ClassUtils.isPrimitiveOrWrapper(obj.getClass())) {
-            sb.append(String.format(BASE_OBJ, tabs(tabs), name, obj));
+            sb.append(appendString(tabs, name, new StringBuilder(obj.toString())));
         } else if (obj.getClass().isArray()) {
-            sb.append(String.format(BASE_OBJ, tabs(tabs), name, typeMap.get(Array.class).json(obj, tabs)));
+            sb.append(appendString(tabs, name, new StringBuilder("")));
+            sb.append(START_ARR);
+            tabs++;
+            for (int i = 0; i < Array.getLength(obj); i++) {
+                sb.append(generateObject(Array.get(obj, i), "", tabs));
+                if (i < Array.getLength(obj) - 1)
+                    sb.append(JSONUtil.DIV);
+                sb.append(JSONUtil.RET);
+            }
+            tabs--;
+            sb.append(String.format(END_ARR, shift(tabs)));
         } else if (typeMap.containsKey(obj.getClass())) {
-            sb.append(String.format(BASE, tabs(tabs), name, typeMap.get(obj.getClass()).json(obj, tabs)));
+            sb.append(appendString(tabs, name, typeMap.get(obj.getClass()).json(obj, tabs)));
         } else if (ClassUtils.getAllInterfaces(obj.getClass()).contains(Collection.class)) {
-            sb.append(String.format(BASE_OBJ, tabs(tabs), name, typeMap.get(Collection.class).json(obj, tabs)));
+            Object[] arr = ((Collection) obj).toArray();
+            sb.append(generateObject(arr, name, tabs));
         } else {
-            sb.append(String.format(BASE_OBJ, tabs(tabs), name, generateCustomObj(obj, tabs)));
+            sb.append(appendString(tabs, name, generateCustomObj(obj, tabs)));
         }
-        if (name.equals("")) {
-            sb.delete(0, 3);
+        return sb;
+    }
+
+    private StringBuilder appendString(int tabs, String name, StringBuilder object) {
+        StringBuilder sb = new StringBuilder();
+        if(name.equals("")) {
+            sb.append(String.format(UNNAMED_OBJ, shift(tabs), object));
+        }
+        else {
+            sb.append(String.format(NAMED_OBJ, shift(tabs), name, object));
         }
         return sb;
     }
@@ -67,7 +84,7 @@ public class JSONGenerator {
         } while (clazz != null);
         sb.deleteCharAt(sb.length() - 2);
         tabs--;
-        sb.append(String.format(END, JSONUtil.tabs(tabs)));
+        sb.append(String.format(END, JSONUtil.shift(tabs)));
         return sb;
     }
 

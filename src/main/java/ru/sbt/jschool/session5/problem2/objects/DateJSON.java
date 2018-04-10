@@ -10,6 +10,6 @@ public class DateJSON implements ObjectJSON {
 
     @Override
     public StringBuilder json(Object obj, int tabs) {
-        return new StringBuilder(dateFormat.format((Date) obj));
+        return new StringBuilder("\"" + dateFormat.format((Date) obj) + "\"");
     }
 }
